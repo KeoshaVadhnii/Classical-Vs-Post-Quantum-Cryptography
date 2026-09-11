@@ -1,6 +1,7 @@
 from benchmark import benchmark
 from rsa import *
 from ECC import *
+from ML_KEM import *
 #import cryptography
 import time
 import statistics
@@ -303,6 +304,133 @@ print("\nECC Size Measurements")
 print("--------------------------")
 
 for metric, (value, unit) in ecc_size_results.items():
+
+    print(
+        f"{metric}: "
+        f"{value} {unit}"
+    )
+
+#ML-KEM correctness testing
+
+kem, ml_kem_public_key = generate_ml_kem_keypair()
+
+ml_kem_ciphertext, client_shared_secret = encapsulate_secret(
+    ml_kem_public_key)
+
+server_shared_secret = decapsulate_secret(kem, ml_kem_ciphertext)
+
+assert client_shared_secret == server_shared_secret
+
+print("\nML-KEM shared secret test passed.")
+
+#ML-KEM key generation
+
+# ML-KEM key generation
+
+with oqs.KeyEncapsulation(ML_KEM_algorithm) as kem_keygen_test:
+
+    def ml_kem_key_generation():
+        kem_keygen_test.generate_keypair()
+
+    ml_kem_key_results = benchmark(
+        ml_kem_key_generation,
+        iterations=iterations
+    )
+
+
+# ML-KEM encapsulation
+
+with oqs.KeyEncapsulation(ML_KEM_algorithm) as kem_encap_test:
+
+    def ml_kem_encapsulation():
+        kem_encap_test.encap_secret(
+            ml_kem_public_key
+        )
+
+    ml_kem_encapsulation_results = benchmark(
+        ml_kem_encapsulation,
+        iterations=iterations
+    )
+
+
+# ML-KEM decapsulation
+
+def ml_kem_decapsulation():
+    decapsulate_secret(
+        kem,
+        ml_kem_ciphertext
+    )
+
+
+ml_kem_decapsulation_results = benchmark(
+    ml_kem_decapsulation,
+    iterations=iterations
+)
+ml_kem_results = {
+
+    "ML-KEM Key Generation":
+        ml_kem_key_results,
+
+    "ML-KEM Encapsulation":
+        ml_kem_encapsulation_results,
+
+    "ML-KEM Decapsulation":
+        ml_kem_decapsulation_results
+}
+
+print("\nML-KEM Benchmark Results")
+print("==========================")
+
+for operation, result in ml_kem_results.items():
+
+    print(f"\n{operation}")
+    print("--------------------------")
+
+    print(f"Iterations: {result['iterations']}")
+    print(f"Mean: {result['mean']:.9f} seconds")
+    print(f"Median: {result['median']:.9f} seconds")
+    print(f"Minimum: {result['minimum']:.9f} seconds")
+    print(f"Maximum: {result['maximum']:.9f} seconds")
+
+    print(
+        f"Standard deviation: "
+        f"{result['standard_deviation']:.9f} seconds"
+    )
+
+ml_kem_sizes = get_ml_kem_sizes(
+    ml_kem_public_key,
+    ml_kem_ciphertext,
+    client_shared_secret,
+    kem
+)
+
+ml_kem_size_results = {
+
+    "Public key": (
+        ml_kem_sizes["public_key_bytes"],
+        "bytes"
+    ),
+
+    "Secret key": (
+        ml_kem_sizes["secret_key_bytes"],
+        "bytes"
+    ),
+
+    "Ciphertext": (
+        ml_kem_sizes["ciphertext_bytes"],
+        "bytes"
+    ),
+
+    "Shared secret": (
+        ml_kem_sizes["shared_secret_bytes"],
+        "bytes"
+    )
+}
+
+print("\nML-KEM Size Measurements")
+print("--------------------------")
+
+for metric, (value, unit) in ml_kem_size_results.items():
 
     print(
         f"{metric}: "
