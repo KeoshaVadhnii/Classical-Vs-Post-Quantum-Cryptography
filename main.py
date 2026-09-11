@@ -1,5 +1,7 @@
 from benchmark import benchmark
 from rsa import *
+from ECC import *
+#import cryptography
 import time
 import statistics
 import os
@@ -176,6 +178,131 @@ print("\nRSA Size Measurements")
 print("--------------------------")
 
 for metric, (value, unit) in size_results.items():
+
+    print(
+        f"{metric}: "
+        f"{value} {unit}"
+    )
+
+#ECC test
+alice_private_key, alice_public_key = generate_ecc_keypair()
+bob_private_key, bob_public_key = generate_ecc_keypair()
+
+#EDCH shared secret test
+alice_shared_secret = derive_shared_secret(alice_private_key, bob_public_key)
+
+bob_shared_secret = derive_shared_secret(bob_private_key, alice_public_key)
+
+assert alice_shared_secret == bob_shared_secret
+
+print("\nECC ECDH shared secret test passed.")
+
+#EDCSA signature test
+ecc_signature = ecc_sign_message(alice_private_key, message)
+assert ecc_verify_signature(
+    alice_public_key, ecc_signature, message)
+print ("ECC ECDSA signature test passed.")
+
+#ECC key generation
+def ecc_key_generation():
+    generate_ecc_keypair()
+
+
+ecc_key_results = benchmark(
+    ecc_key_generation,
+    iterations=iterations
+)
+
+#ECDH shared secret derivation
+def ecc_shared_secret_derivation():
+    derive_shared_secret(alice_private_key, bob_public_key)
+
+ecc_ecdh_results = benchmark(
+    ecc_shared_secret_derivation,
+    iterations=iterations
+)
+
+#ECDSA signing
+def ecc_signing():
+    ecc_sign_message(alice_private_key, message)
+
+ecc_signing_results = benchmark(
+    ecc_signing, iterations=iterations)
+
+#ECDSA verification
+def ecc_verification():
+    ecc_verify_signature(alice_public_key,ecc_signature, message)
+
+ecc_verification_results = benchmark(
+    ecc_verification, iterations=iterations)
+
+ecc_results = {
+    "ECC Key Generation": ecc_key_results,
+    "ECDH Shared Secret": ecc_ecdh_results,
+    "ECDSA Signing": ecc_signing_results,
+    "ECDSA Verification": ecc_verification_results
+}
+
+print("\nECC Benchmark Results")
+print("==========================")
+
+for operation, result in ecc_results.items():
+
+    print(f"\n{operation}")
+    print("--------------------------")
+
+    print(f"Iterations: {result['iterations']}")
+    print(f"Mean: {result['mean']:.9f} seconds")
+    print(f"Median: {result['median']:.9f} seconds")
+    print(f"Minimum: {result['minimum']:.9f} seconds")
+    print(f"Maximum: {result['maximum']:.9f} seconds")
+    print(
+        f"Standard deviation: "
+        f"{result['standard_deviation']:.9f} seconds"
+    )
+
+ecc_key_sizes = get_ecc_key_sizes(
+    alice_private_key,
+    alice_public_key
+)
+
+ecc_size_results = {
+
+    "ECC curve": (
+        ecc_key_sizes["ecc_curve_bits"],
+        "bits"
+    ),
+
+    "Public key DER": (
+        ecc_key_sizes["public_key_der_bytes"],
+        "bytes"
+    ),
+
+    "Private key DER": (
+        ecc_key_sizes["private_key_der_bytes"],
+        "bytes"
+    ),
+
+    "Public key raw": (
+        ecc_key_sizes["public_key_raw_bytes"],
+        "bytes"
+    ),
+
+    "Shared secret": (
+        len(alice_shared_secret),
+        "bytes"
+    ),
+
+    "Signature": (
+        len(ecc_signature),
+        "bytes"
+    )
+}
+
+print("\nECC Size Measurements")
+print("--------------------------")
+
+for metric, (value, unit) in ecc_size_results.items():
 
     print(
         f"{metric}: "
