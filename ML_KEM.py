@@ -1,18 +1,18 @@
 import oqs
 
 #ML-KEM configuration
-ML_KEM_algorithm = "ML-KEM-768"
+ML_KEM_algorithm = ["ML-KEM-512", "ML-KEM-768", "ML-KEM-1024"]
 
-def generate_ml_kem_keypair():
-    kem = oqs.KeyEncapsulation(ML_KEM_algorithm)
+def generate_ml_kem_keypair(algorithm):
+    kem = oqs.KeyEncapsulation(algorithm)
 
     public_key = kem.generate_keypair()
 
     return kem, public_key
 
-def encapsulate_secret(public_key):
+def encapsulate_secret(public_key, algorithm):
 
-    with oqs.KeyEncapsulation(ML_KEM_algorithm) as client:
+    with oqs.KeyEncapsulation(algorithm) as client:
 
         ciphertext, shared_secret = client.encap_secret(public_key)
 

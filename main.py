@@ -310,130 +310,145 @@ for metric, (value, unit) in ecc_size_results.items():
         f"{value} {unit}"
     )
 
-#ML-KEM correctness testing
+#ML-KEM testing and benchmarking
+all_ml_kem_results = {}
+all_ml_kem_sizes = {}
 
-kem, ml_kem_public_key = generate_ml_kem_keypair()
+for algorithm in ML_KEM_algorithm:
+    print(f"\n===========================")
+    print(f"{algorithm}")
+    print(f"===============================")
 
-ml_kem_ciphertext, client_shared_secret = encapsulate_secret(
-    ml_kem_public_key)
+    kem, ml_kem_public_key = generate_ml_kem_keypair(algorithm)
 
-server_shared_secret = decapsulate_secret(kem, ml_kem_ciphertext)
+    ml_kem_ciphertext, client_shared_secret = encapsulate_secret(
+        ml_kem_public_key,algorithm)
 
-assert client_shared_secret == server_shared_secret
+    server_shared_secret = decapsulate_secret(kem, ml_kem_ciphertext)
 
-print("\nML-KEM shared secret test passed.")
+    assert client_shared_secret == server_shared_secret
 
-#ML-KEM key generation
-
-# ML-KEM key generation
-
-with oqs.KeyEncapsulation(ML_KEM_algorithm) as kem_keygen_test:
-
-    def ml_kem_key_generation():
-        kem_keygen_test.generate_keypair()
-
-    ml_kem_key_results = benchmark(
-        ml_kem_key_generation,
-        iterations=iterations
-    )
+    print(f"{algorithm} shared secret test passed")
 
 
-# ML-KEM encapsulation
+    #ML-KEM key generation
 
-with oqs.KeyEncapsulation(ML_KEM_algorithm) as kem_encap_test:
+    with oqs.KeyEncapsulation(algorithm) as kem_keygen_test:
 
-    def ml_kem_encapsulation():
-        kem_encap_test.encap_secret(
-            ml_kem_public_key
+        def ml_kem_key_generation():
+            kem_keygen_test.generate_keypair()
+
+        ml_kem_key_results = benchmark(
+            ml_kem_key_generation,
+            iterations=iterations
         )
 
-    ml_kem_encapsulation_results = benchmark(
-        ml_kem_encapsulation,
+
+    # ML-KEM encapsulation
+
+    with oqs.KeyEncapsulation(algorithm) as kem_encap_test:
+
+        def ml_kem_encapsulation():
+            kem_encap_test.encap_secret(
+                ml_kem_public_key
+            )
+
+        ml_kem_encapsulation_results = benchmark(
+            ml_kem_encapsulation,
+            iterations=iterations
+        )
+
+
+    # ML-KEM decapsulation
+
+    def ml_kem_decapsulation():
+        decapsulate_secret(
+            kem,
+            ml_kem_ciphertext
+        )
+
+
+    ml_kem_decapsulation_results = benchmark(
+        ml_kem_decapsulation,
         iterations=iterations
     )
+    ml_kem_results = {
+
+        "Key Generation":
+            ml_kem_key_results,
+
+        "Encapsulation":
+            ml_kem_encapsulation_results,
+
+        "Decapsulation":
+            ml_kem_decapsulation_results
+    }
+
+    all_ml_kem_results[algorithm] = ml_kem_results
 
 
-# ML-KEM decapsulation
+    print("\nBenchmark Results")
+    print("==========================")
 
-def ml_kem_decapsulation():
-    decapsulate_secret(
-        kem,
-        ml_kem_ciphertext
+    print(f"{algorithm} benchmark results")
+    print("==================================")
+
+    for operation, result in ml_kem_results.items():
+
+        print(f"\n{operation}")
+        print("--------------------------")
+
+        print(f"Iterations: {result['iterations']}")
+        print(f"Mean: {result['mean']:.9f} seconds")
+        print(f"Median: {result['median']:.9f} seconds")
+        print(f"Minimum: {result['minimum']:.9f} seconds")
+        print(f"Maximum: {result['maximum']:.9f} seconds")
+
+        print(
+            f"Standard deviation: "
+            f"{result['standard_deviation']:.9f} seconds"
+        )
+
+    #size measurements
+    ml_kem_sizes = get_ml_kem_sizes(
+        ml_kem_public_key,
+        ml_kem_ciphertext,
+        client_shared_secret,
+        kem
     )
 
+    ml_kem_size_results = {
 
-ml_kem_decapsulation_results = benchmark(
-    ml_kem_decapsulation,
-    iterations=iterations
-)
-ml_kem_results = {
+        "Public key": (
+            ml_kem_sizes["public_key_bytes"],
+            "bytes"
+        ),
 
-    "ML-KEM Key Generation":
-        ml_kem_key_results,
+        "Secret key": (
+            ml_kem_sizes["secret_key_bytes"],
+            "bytes"
+        ),
 
-    "ML-KEM Encapsulation":
-        ml_kem_encapsulation_results,
+        "Ciphertext": (
+            ml_kem_sizes["ciphertext_bytes"],
+            "bytes"
+        ),
 
-    "ML-KEM Decapsulation":
-        ml_kem_decapsulation_results
-}
+        "Shared secret": (
+            ml_kem_sizes["shared_secret_bytes"],
+            "bytes"
+        )
+    }
 
-print("\nML-KEM Benchmark Results")
-print("==========================")
+    all_ml_kem_sizes[algorithm] = ml_kem_size_results
 
-for operation, result in ml_kem_results.items():
-
-    print(f"\n{operation}")
+    print("\nML-KEM Size Measurements")
     print("--------------------------")
 
-    print(f"Iterations: {result['iterations']}")
-    print(f"Mean: {result['mean']:.9f} seconds")
-    print(f"Median: {result['median']:.9f} seconds")
-    print(f"Minimum: {result['minimum']:.9f} seconds")
-    print(f"Maximum: {result['maximum']:.9f} seconds")
+    for metric, (value, unit) in ml_kem_size_results.items():
 
-    print(
-        f"Standard deviation: "
-        f"{result['standard_deviation']:.9f} seconds"
-    )
-
-ml_kem_sizes = get_ml_kem_sizes(
-    ml_kem_public_key,
-    ml_kem_ciphertext,
-    client_shared_secret,
-    kem
-)
-
-ml_kem_size_results = {
-
-    "Public key": (
-        ml_kem_sizes["public_key_bytes"],
-        "bytes"
-    ),
-
-    "Secret key": (
-        ml_kem_sizes["secret_key_bytes"],
-        "bytes"
-    ),
-
-    "Ciphertext": (
-        ml_kem_sizes["ciphertext_bytes"],
-        "bytes"
-    ),
-
-    "Shared secret": (
-        ml_kem_sizes["shared_secret_bytes"],
-        "bytes"
-    )
-}
-
-print("\nML-KEM Size Measurements")
-print("--------------------------")
-
-for metric, (value, unit) in ml_kem_size_results.items():
-
-    print(
-        f"{metric}: "
-        f"{value} {unit}"
-    )
+        print(
+            f"{metric}: "
+            f"{value} {unit}"
+        )
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
