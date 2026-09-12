@@ -2,6 +2,7 @@ from benchmark import benchmark
 from rsa import *
 from ECC import *
 from ML_KEM import *
+from ML_DSA import *
 #import cryptography
 import time
 import statistics
@@ -451,4 +452,94 @@ for algorithm in ML_KEM_algorithm:
             f"{metric}: "
             f"{value} {unit}"
         )
+
+#ML-DSA correctness testing
+
+all_ml_dsa_results = {}
+all_ml_dsa_sizes = {}
+
+for algorithm in ML_DSA_algorithms:
+    print("\n=====================\n")
+    print(algorithm)
+    print("======================")
+
+
+
+    ml_dsa_signer, ml_dsa_public_key = generate_ml_dsa_keypair(algorithm)
+
+    ml_dsa_signature = sign_ml_dsa_message(ml_dsa_signer, message)
+
+    ml_dsa_valid = verify_ml_dsa_signature(ml_dsa_public_key, ml_dsa_signature, message, algorithm)
+
+    assert ml_dsa_valid
+
+    print(f"{algorithm} signature passed")
+
+    #key generation benchmark
+    with oqs.Signature(algorithm) as ml_dsa_keygen_test:
+
+        def ml_dsa_key_generation():
+            ml_dsa_keygen_test.generate_keypair()
+
+        ml_dsa_key_results = benchmark(ml_dsa_key_generation,iterations=iterations)
+
+    #signing benchmark
+    def ml_dsa_signing():
+        sign_ml_dsa_message(ml_dsa_signer, message)
+
+    ml_dsa_signing_results = benchmark(ml_dsa_signing,iterations=iterations)
+
+    #verification benchmark
+    with oqs.Signature(algorithm) as ml_dsa_verifier:
+
+        def ml_dsa_verification():
+            ml_dsa_verifier.verify(message, ml_dsa_signature, ml_dsa_public_key)
+
+        ml_dsa_verification_results = benchmark(ml_dsa_verification,iterations=iterations)
+
+    #store timing results
+
+    ml_dsa_results = {
+        "Key Generation": ml_dsa_key_results,
+        "signing": ml_dsa_signing_results,
+        "verification": ml_dsa_verification_results
+    }
+
+    all_ml_dsa_results[algorithm] = ml_dsa_results
+
+    #Print benchmark results
+    print(f"\n{algorithm} Benchmarks Results")
+    print("==========================")
+
+    for operation, result in ml_dsa_results.items():
+
+        print(f"\n{operation}")
+        print("----------------------")
+
+        print(f"Iterations: {result['iterations']}")
+        print(f"Mean: {result['mean']:.9f} seconds")
+        print(f"Median: {result['median']:.9f} seconds")
+        print(f"Minimum: {result['minimum']:.9f} seconds")
+        print(f"Maximum: {result['maximum']:.9f} seconds")
+        print(f"Standard deviation: {result['standard_deviation']:.9f} seconds")
+
+    #Size measurements
+    ml_dsa_sizes = get_ml_dsa_sizes(ml_dsa_public_key, ml_dsa_signature, ml_dsa_signer)
+
+    ml_dsa_size_results = {
+        "Public key": (ml_dsa_sizes["public_key_bytes"], "bytes"),
+        "Secret key": (ml_dsa_sizes["secret_key_bytes"], "bytes"),
+        "Signature": (ml_dsa_sizes["signature_bytes"], "bytes"),
+    }
+
+    all_ml_dsa_sizes[algorithm] = ml_dsa_size_results
+
+    print(f"\n{algorithm} Size Measurements")
+    print("--------------------------")
+    for metric, (value, unit) in ml_dsa_size_results.items():
+        print(
+            f"{metric}: "
+            f"{value} {unit}"
+        )
+
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
