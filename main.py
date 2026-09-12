@@ -1,4 +1,5 @@
 from benchmark import benchmark
+from system_info import get_system_info
 from rsa import *
 from ECC import *
 from ML_KEM import *
@@ -13,6 +14,17 @@ import csv
     #time.sleep(0.001)
 
 iterations = 1000
+
+#System Info
+
+system_information = get_system_info()
+
+print("\nSystem Information")
+print("==========================")
+
+for item, value in system_information.items():
+    print(f"{item}: {value}")
+print("\n=============================\n")
 
 # Prepare RSA keys and test message
 private_key, public_key = generate_rsa_keypair()
