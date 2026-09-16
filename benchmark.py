@@ -6,7 +6,7 @@ def benchmark(operation, iterations=1000, warmup = 10):
     for _ in range(warmup):
         operation()
 
-    times = []
+    #times = []
 
     #runs cryptographic operations repeatedly
     times = []

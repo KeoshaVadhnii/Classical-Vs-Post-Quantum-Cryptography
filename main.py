@@ -1,5 +1,6 @@
 from benchmark import benchmark
 from system_info import get_system_info
+from resource_benchmark import (cpu_benchmark,memory_benchmark)
 from rsa import *
 from ECC import *
 from ML_KEM import *
@@ -90,49 +91,31 @@ results = {
     "Verification": verification_results
 }
 
-#results = benchmark(test_operation)
+rsa_cpu_results =  {
+    "Key Generation": cpu_benchmark(rsa_key_generation),
+    "Encryption": cpu_benchmark(rsa_encryption),
+    "Decryption": cpu_benchmark(rsa_decryption),
+    "Signing": cpu_benchmark(rsa_signing),
+    "Verification": cpu_benchmark(rsa_verification),
+}
 
-#print("Benchmark Results:")
-#print(f"Iterations: {results['iterations']}")
-#print(f"Mean: {results['mean']:.6f} seconds")
-#print(f"Median: {results['median']:.6f} seconds")
-#print(f"Minimum: {results['minimum']:.6f} seconds")
-#print(f"Maximum: {results['maximum']:.6f} seconds")
-#print(f"Standard deviation: {results['standard_deviation']:.6f} seconds")
-
-#print("\nKey Generation")
-#print("--------------------------")
-#print(f"Iterations: {key_results['iterations']}")
-#print(f"Mean: {key_results['mean']:.6f} seconds")
-#print(f"Median: {key_results['median']:.6f} seconds")
-#print(f"Minimum: {key_results['minimum']:.6f} seconds")
-#print(f"Maximum: {key_results['maximum']:.6f} seconds")
-#print(f"Standard deviation: {key_results['standard_deviation']:.6f} seconds")
-
-#print("\nEncryption")
-#print("--------------------------")
-#print(f"Iterations:{encryption_results['iterations']}")
-#print(f"Mean: {encryption_results['mean']:.6f} seconds")
-#print(f"Median: {encryption_results['median']:.6f} seconds")
-#print(f"Minimum: {encryption_results['minimum']:.6f} seconds")
-#print(f"Maximum: {encryption_results['maximum']:.6f} seconds")
-#print(f"Standard deviation: {encryption_results['standard_deviation']:.6f} seconds")
-
-#print("\nDecryption")
-#print("--------------------------")
-#print(f"Iterations: {decryption_results['iterations']}")
-#print(f"Mean: {decryption_results['mean']:.6f} seconds")
-#print(f"Median: {decryption_results['median']:.6f} seconds")
-#print(f"Minimum: {decryption_results['minimum']:.6f} seconds")
-#print(f"Maximum: {decryption_results['maximum']:.6f} seconds")
-#print(f"Standard deviation: {decryption_results['standard_deviation']:.6f} seconds")
+rsa_memory_results = {
+"Key Generation":memory_benchmark(rsa_key_generation),
+    "Encryption":memory_benchmark(rsa_encryption),
+    "Decryption":memory_benchmark(rsa_decryption),
+    "Signing": memory_benchmark(rsa_signing),
+    "Verification":memory_benchmark(rsa_verification)
+}
 
 # print timing results
 for operation, result in results.items():
+    cpu = rsa_cpu_results[operation]
+    memory = rsa_memory_results[operation]
 
     print(f"\n{operation}")
     print("--------------------------")
 
+    #timing
     print(f"Iterations: {result['iterations']}")
     print(f"Mean: {result['mean']:.9f} seconds")
     print(f"Median: {result['median']:.9f} seconds")
@@ -142,6 +125,22 @@ for operation, result in results.items():
         f"Standard deviation: "
         f"{result['standard_deviation']:.9f} seconds"
     )
+
+    #CPU
+    print(f"CPU Iterations: {cpu['iterations']}")
+    print(f"Wall time: "f"{cpu['wall_time_seconds']:.6f} seconds")
+    print(f"Total CPU time: "f"{cpu['cpu_time_seconds']:.6f} seconds")
+    #print(f"CPU time per operation: " f"{cpu['cpu_time_per_operation']:.9f} seconds")
+    print(f"CPU utilisation (one-core basis): " f"{cpu['cpu_utilisation']:.2f}%")
+
+
+    #Memory
+    print(f"Memory Iterations: "f"{memory['iterations']}")
+    print(f"Memory before: " f"{memory['memory_before_mb']:.4f} MB")
+    print(f"Memory after: " f"{memory['memory_after_mb']:.4f} MB")
+    print(f"Peak memory: " f"{memory['peak_memory_mb']:.4f} MB")
+    print(f"Peak memory increase: " f"{memory['peak_memory_increase_kb']:.2f} KB")
+
 
 # RSA size measurements
 key_sizes = get_rsa_key_sizes(
@@ -196,6 +195,17 @@ for metric, (value, unit) in size_results.items():
     print(
         f"{metric}: "
         f"{value} {unit}"
+    )
+
+    # Average CPU time per RSA operation
+print("\nRSA Average CPU Time per Operation")
+print("===================================")
+
+for operation, cpu in rsa_cpu_results.items():
+    print(
+        f"{operation}: "
+        f"{cpu['cpu_time_per_operation']:.9f} "
+        f"seconds/operation"
     )
 
 #ECC test
@@ -257,10 +267,27 @@ ecc_results = {
     "ECDSA Verification": ecc_verification_results
 }
 
+ecc_cpu_results = {
+    "ECC Key Generation": cpu_benchmark(ecc_key_generation),
+    "ECDH Shared Secret": cpu_benchmark(ecc_shared_secret_derivation),
+    "ECDSA Signing": cpu_benchmark(ecc_signing),
+    "ECDSA Verification": cpu_benchmark(ecc_verification)
+}
+
+ecc_memory_results = {
+    "ECC Key Generation": memory_benchmark(ecc_key_generation),
+    "ECDH Shared Secret": memory_benchmark(ecc_shared_secret_derivation),
+    "ECDSA Signing": memory_benchmark(ecc_signing),
+    "ECDSA Verification": memory_benchmark(ecc_verification)
+}
+
 print("\nECC Benchmark Results")
 print("==========================")
 
 for operation, result in ecc_results.items():
+
+    cpu = ecc_cpu_results[operation]
+    memory = ecc_memory_results[operation]
 
     print(f"\n{operation}")
     print("--------------------------")
@@ -274,6 +301,20 @@ for operation, result in ecc_results.items():
         f"Standard deviation: "
         f"{result['standard_deviation']:.9f} seconds"
     )
+
+    # CPU
+    print(f"CPU Iterations: {cpu['iterations']}")
+    print(f"Wall time: "f"{cpu['wall_time_seconds']:.6f} seconds")
+    print(f"Total CPU time: "f"{cpu['cpu_time_seconds']:.6f} seconds")
+    # print(f"CPU time per operation: " f"{cpu['cpu_time_per_operation']:.9f} seconds")
+    print(f"CPU utilisation (one-core basis): " f"{cpu['cpu_utilisation']:.2f}%")
+
+    # Memory
+    print(f"Memory Iterations: "f"{memory['iterations']}")
+    print(f"Memory before: " f"{memory['memory_before_mb']:.4f} MB")
+    print(f"Memory after: " f"{memory['memory_after_mb']:.4f} MB")
+    print(f"Peak memory: " f"{memory['peak_memory_mb']:.4f} MB")
+    print(f"Peak memory increase: " f"{memory['peak_memory_increase_kb']:.2f} KB")
 
 ecc_key_sizes = get_ecc_key_sizes(
     alice_private_key,
@@ -323,9 +364,23 @@ for metric, (value, unit) in ecc_size_results.items():
         f"{value} {unit}"
     )
 
+print("\nECC Average CPU Time per Operation")
+print("===================================")
+
+for operation, cpu in ecc_cpu_results.items():
+
+    print(
+        f"{operation}: "
+        f"{cpu['cpu_time_per_operation']:.9f} "
+        f"seconds/operation"
+    )
+
 #ML-KEM testing and benchmarking
 all_ml_kem_results = {}
 all_ml_kem_sizes = {}
+
+all_ml_kem_cpu_results = {}
+all_ml_kem_memory_results = {}
 
 for algorithm in ML_KEM_algorithm:
     print(f"\n===========================")
@@ -356,6 +411,10 @@ for algorithm in ML_KEM_algorithm:
             iterations=iterations
         )
 
+        ml_kem_key_cpu = cpu_benchmark(ml_kem_key_generation)
+
+        ml_kem_key_memory = memory_benchmark(ml_kem_key_generation)
+
 
     # ML-KEM encapsulation
 
@@ -371,6 +430,10 @@ for algorithm in ML_KEM_algorithm:
             iterations=iterations
         )
 
+        ml_kem_encapsulation_cpu = cpu_benchmark(ml_kem_encapsulation)
+
+        ml_kem_encapsulation_memory = memory_benchmark(ml_kem_encapsulation)
+
 
     # ML-KEM decapsulation
 
@@ -380,11 +443,13 @@ for algorithm in ML_KEM_algorithm:
             ml_kem_ciphertext
         )
 
+    ml_kem_decapsulation_results = benchmark(ml_kem_decapsulation, iterations=iterations)
 
-    ml_kem_decapsulation_results = benchmark(
-        ml_kem_decapsulation,
-        iterations=iterations
-    )
+    ml_kem_decapsulation_cpu = cpu_benchmark(ml_kem_decapsulation)
+
+    ml_kem_decapsulation_memory = memory_benchmark(ml_kem_decapsulation)
+
+
     ml_kem_results = {
 
         "Key Generation":
@@ -397,7 +462,21 @@ for algorithm in ML_KEM_algorithm:
             ml_kem_decapsulation_results
     }
 
+    ml_kem_cpu_results = {
+        "Key Generation": ml_kem_key_cpu,
+        "Encapsulation": ml_kem_encapsulation_cpu,
+        "Decapsulation": ml_kem_decapsulation_cpu
+    }
+
+    ml_kem_memory_results = {
+        "Key Generation": ml_kem_key_memory,
+        "Encapsulation": ml_kem_encapsulation_memory,
+        "Decapsulation": ml_kem_decapsulation_memory
+    }
+
     all_ml_kem_results[algorithm] = ml_kem_results
+    all_ml_kem_cpu_results[algorithm] = ml_kem_cpu_results
+    all_ml_kem_memory_results[algorithm] = ml_kem_memory_results
 
 
     print("\nBenchmark Results")
@@ -407,10 +486,13 @@ for algorithm in ML_KEM_algorithm:
     print("==================================")
 
     for operation, result in ml_kem_results.items():
+        cpu = ml_kem_cpu_results[operation]
+        memory = ml_kem_memory_results[operation]
 
         print(f"\n{operation}")
         print("--------------------------")
 
+        #timing
         print(f"Iterations: {result['iterations']}")
         print(f"Mean: {result['mean']:.9f} seconds")
         print(f"Median: {result['median']:.9f} seconds")
@@ -421,6 +503,21 @@ for algorithm in ML_KEM_algorithm:
             f"Standard deviation: "
             f"{result['standard_deviation']:.9f} seconds"
         )
+
+        #cpu
+        print(f"CPU Iterations: {cpu['iterations']}")
+        print(f"Wall time:"
+              f"{cpu['wall_time_seconds']:.6f} seconds")
+        print(f"Total CPU time: " f"{cpu['cpu_time_seconds']:.6f} seconds")
+        print(f"CPU utilisation: {cpu['cpu_utilisation']:.2f} %")
+
+        #memory
+        print(f"Memory Iterations: " f"{memory['iterations']}")
+        print(f"Memory before: " f"{memory['memory_before_mb']:.4f} MB")
+        print(f"Memory after: " f"{memory['memory_after_mb']:.4f} MB")
+        print(f"Peak memory: " f"{memory['peak_memory_mb']:.4f} MB")
+        print(f"Peak memory increase: " f"{memory['peak_memory_increase_kb']:.2f} KB")
+
 
     #size measurements
     ml_kem_sizes = get_ml_kem_sizes(
@@ -465,10 +562,20 @@ for algorithm in ML_KEM_algorithm:
             f"{value} {unit}"
         )
 
+    print(f"\n{algorithm} Average CPU Time per Operation")
+    print("------------------------")
+
+    for operation, cpu, in ml_kem_cpu_results.items():
+
+        print(f"{operation}: " f"{cpu['cpu_time_per_operation']:.9f} " f"seconds/operation")
+
 #ML-DSA correctness testing
 
 all_ml_dsa_results = {}
 all_ml_dsa_sizes = {}
+
+all_ml_dsa_cpu_results = {}
+all_ml_dsa_memory_results = {}
 
 for algorithm in ML_DSA_algorithms:
     print("\n=====================\n")
@@ -495,11 +602,19 @@ for algorithm in ML_DSA_algorithms:
 
         ml_dsa_key_results = benchmark(ml_dsa_key_generation,iterations=iterations)
 
+        ml_dsa_key_cpu_results = cpu_benchmark(ml_dsa_key_generation)
+
+        ml_dsa_key_memory_results = memory_benchmark(ml_dsa_key_generation)
+
     #signing benchmark
     def ml_dsa_signing():
         sign_ml_dsa_message(ml_dsa_signer, message)
 
     ml_dsa_signing_results = benchmark(ml_dsa_signing,iterations=iterations)
+
+    ml_dsa_signing_cpu_results = cpu_benchmark(ml_dsa_signing)
+
+    ml_dsa_signing_memory_results = memory_benchmark(ml_dsa_signing)
 
     #verification benchmark
     with oqs.Signature(algorithm) as ml_dsa_verifier:
@@ -509,21 +624,42 @@ for algorithm in ML_DSA_algorithms:
 
         ml_dsa_verification_results = benchmark(ml_dsa_verification,iterations=iterations)
 
+        ml_dsa_verification_cpu_results = cpu_benchmark(ml_dsa_verification)
+
+        ml_dsa_verification_memory_results = memory_benchmark(ml_dsa_verification)
+
     #store timing results
 
     ml_dsa_results = {
         "Key Generation": ml_dsa_key_results,
-        "signing": ml_dsa_signing_results,
-        "verification": ml_dsa_verification_results
+        "Signing": ml_dsa_signing_results,
+        "Verification": ml_dsa_verification_results
+    }
+
+    ml_dsa_cpu_results = {
+        "Key Generation": ml_dsa_key_cpu_results,
+        "Signing": ml_dsa_signing_cpu_results,
+        "Verification": ml_dsa_verification_cpu_results
+    }
+
+    ml_dsa_memory_results = {
+        "Key Generation": ml_dsa_key_memory_results,
+        "Signing": ml_dsa_signing_memory_results,
+        "Verification": ml_dsa_verification_memory_results
     }
 
     all_ml_dsa_results[algorithm] = ml_dsa_results
+    all_ml_dsa_cpu_results[algorithm] = ml_dsa_cpu_results
+    all_ml_dsa_memory_results[algorithm] = ml_dsa_memory_results
 
     #Print benchmark results
     print(f"\n{algorithm} Benchmarks Results")
     print("==========================")
 
     for operation, result in ml_dsa_results.items():
+
+        cpu = ml_dsa_cpu_results[operation]
+        memory = ml_dsa_memory_results[operation]
 
         print(f"\n{operation}")
         print("----------------------")
@@ -534,6 +670,20 @@ for algorithm in ML_DSA_algorithms:
         print(f"Minimum: {result['minimum']:.9f} seconds")
         print(f"Maximum: {result['maximum']:.9f} seconds")
         print(f"Standard deviation: {result['standard_deviation']:.9f} seconds")
+
+        #CPU
+        print(f"CPU Iterations: {cpu['iterations']}")
+        print(f"Wall Time: " f"{cpu['wall_time_seconds']:.9f} seconds")
+        print(f"Total CPU Time: " f"{cpu['cpu_time_seconds']:.9f} seconds")
+        print(f"CPU Utilisation: " f"{cpu['cpu_utilisation']:.2f} %")
+
+        #Memory
+        print(f"Memory Iterations:" f"{memory['iterations']}")
+        print(f"Memory before: " f"{memory['memory_before_mb']:.4f} MB")
+        print(f"Memory after: " f"{memory['memory_after_mb']:.4f} MB")
+        print("Peak Memory: " f"{memory['peak_memory_mb']:.4f} MB")
+        print(f"Peak Memory Increase: " f"{memory['peak_memory_increase_kb']:.2f} KB")
+
 
     #Size measurements
     ml_dsa_sizes = get_ml_dsa_sizes(ml_dsa_public_key, ml_dsa_signature, ml_dsa_signer)
@@ -552,6 +702,18 @@ for algorithm in ML_DSA_algorithms:
         print(
             f"{metric}: "
             f"{value} {unit}"
+        )
+
+    print(
+        f"\n{algorithm} Average CPU Time per Operation"
+    )
+    print("------------------------")
+
+    for operation, cpu in ml_dsa_cpu_results.items():
+        print(
+            f"{operation}: "
+            f"{cpu['cpu_time_per_operation']:.9f} "
+            f"seconds/operation"
         )
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
