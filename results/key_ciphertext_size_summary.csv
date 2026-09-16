@@ -1,0 +1,6 @@
+Algorithm,Public key (bytes),Private/secret key (bytes),Ciphertext (bytes)
+RSA-2048,294.0,1216.0,256.0
+ECC P-256,91.0,138.0,
+ML-KEM-512,800.0,1632.0,768.0
+ML-KEM-768,1184.0,2400.0,1088.0
+ML-KEM-1024,1568.0,3168.0,1568.0

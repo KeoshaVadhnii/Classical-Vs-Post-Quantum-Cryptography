@@ -1,0 +1,4 @@
+algorithm,operation,Mean time (ms)
+RSA-2048,Encryption,0.0204 ± 0.0006
+RSA-2048,Decryption,0.4512 ± 0.0090
+ECC P-256,ECDH shared-secret derivation,0.0399 ± 0.0005

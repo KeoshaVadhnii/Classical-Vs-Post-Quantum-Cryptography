@@ -1,0 +1,10 @@
+algorithm,operation,Mean time (ms)
+ECC P-256,ECDH Shared Secret,0.0399 ± 0.0005
+ML-KEM-1024,Decapsulation,0.3051 ± 0.0164
+ML-KEM-1024,Encapsulation,0.2646 ± 0.0190
+ML-KEM-512,Decapsulation,0.1577 ± 0.0118
+ML-KEM-512,Encapsulation,0.1266 ± 0.0045
+ML-KEM-768,Decapsulation,0.2564 ± 0.0793
+ML-KEM-768,Encapsulation,0.1817 ± 0.0052
+RSA-2048,Decryption,0.4512 ± 0.0090
+RSA-2048,Encryption,0.0204 ± 0.0006

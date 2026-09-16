@@ -5,12 +5,14 @@ from rsa import *
 from ECC import *
 from ML_KEM import *
 from ML_DSA import *
+from data_collection import *
 #import cryptography
 import time
 import statistics
 import os
 import csv
 
+RUN_ID = 5
 #def test_operation():
     #time.sleep(0.001)
 
@@ -141,6 +143,9 @@ for operation, result in results.items():
     print(f"Peak memory: " f"{memory['peak_memory_mb']:.4f} MB")
     print(f"Peak memory increase: " f"{memory['peak_memory_increase_kb']:.2f} KB")
 
+    #save results to CSV
+    save_performance_result(RUN_ID, "RSA-2048", operation, result, cpu, memory)
+
 
 # RSA size measurements
 key_sizes = get_rsa_key_sizes(
@@ -196,6 +201,10 @@ for metric, (value, unit) in size_results.items():
         f"{metric}: "
         f"{value} {unit}"
     )
+
+    #save size measurements
+    if unit == "bytes":
+        save_size_result(RUN_ID, "RSA-2048", metric, value)
 
     # Average CPU time per RSA operation
 print("\nRSA Average CPU Time per Operation")
@@ -316,6 +325,9 @@ for operation, result in ecc_results.items():
     print(f"Peak memory: " f"{memory['peak_memory_mb']:.4f} MB")
     print(f"Peak memory increase: " f"{memory['peak_memory_increase_kb']:.2f} KB")
 
+    #save results to CSV
+    save_performance_result(RUN_ID, "ECC P-256", operation, result, cpu, memory)
+
 ecc_key_sizes = get_ecc_key_sizes(
     alice_private_key,
     alice_public_key
@@ -363,6 +375,9 @@ for metric, (value, unit) in ecc_size_results.items():
         f"{metric}: "
         f"{value} {unit}"
     )
+
+    if unit == "bytes":
+        save_size_result(RUN_ID, "ECC P-256", metric, value)
 
 print("\nECC Average CPU Time per Operation")
 print("===================================")
@@ -518,6 +533,9 @@ for algorithm in ML_KEM_algorithm:
         print(f"Peak memory: " f"{memory['peak_memory_mb']:.4f} MB")
         print(f"Peak memory increase: " f"{memory['peak_memory_increase_kb']:.2f} KB")
 
+        #save to CSV file
+        save_performance_result(RUN_ID, algorithm, operation, result, cpu, memory)
+
 
     #size measurements
     ml_kem_sizes = get_ml_kem_sizes(
@@ -561,6 +579,9 @@ for algorithm in ML_KEM_algorithm:
             f"{metric}: "
             f"{value} {unit}"
         )
+
+        if unit == "bytes":
+            save_size_result(RUN_ID, algorithm, metric, value)
 
     print(f"\n{algorithm} Average CPU Time per Operation")
     print("------------------------")
@@ -685,6 +706,10 @@ for algorithm in ML_DSA_algorithms:
         print(f"Peak Memory Increase: " f"{memory['peak_memory_increase_kb']:.2f} KB")
 
 
+        #save to CSV
+        save_performance_result(RUN_ID, algorithm, operation, result, cpu, memory)
+
+
     #Size measurements
     ml_dsa_sizes = get_ml_dsa_sizes(ml_dsa_public_key, ml_dsa_signature, ml_dsa_signer)
 
@@ -703,6 +728,8 @@ for algorithm in ML_DSA_algorithms:
             f"{metric}: "
             f"{value} {unit}"
         )
+        if unit == "bytes":
+            save_size_result(RUN_ID, algorithm, metric, value)
 
     print(
         f"\n{algorithm} Average CPU Time per Operation"

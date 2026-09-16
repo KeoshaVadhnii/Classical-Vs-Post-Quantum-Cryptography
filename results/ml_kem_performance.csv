@@ -1,0 +1,4 @@
+algorithm,Encapsulation time (ms),Decapsulation time (ms)
+ML-KEM-512,0.1266 ± 0.0045,0.1577 ± 0.0118
+ML-KEM-768,0.1817 ± 0.0052,0.2564 ± 0.0793
+ML-KEM-1024,0.2646 ± 0.0190,0.3051 ± 0.0164

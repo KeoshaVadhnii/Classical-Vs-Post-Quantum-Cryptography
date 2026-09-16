@@ -1,0 +1,161 @@
+run_id,algorithm,measurement,size_bytes
+1,RSA-2048,RSA modulus bytes,256
+1,RSA-2048,Public key DER,294
+1,RSA-2048,Private key DER,1215
+1,RSA-2048,Message,36
+1,RSA-2048,Ciphertext,256
+1,RSA-2048,Signature,256
+1,ECC P-256,Public key DER,91
+1,ECC P-256,Private key DER,138
+1,ECC P-256,Public key raw,65
+1,ECC P-256,Shared secret,32
+1,ECC P-256,Signature,70
+1,ML-KEM-512,Public key,800
+1,ML-KEM-512,Secret key,1632
+1,ML-KEM-512,Ciphertext,768
+1,ML-KEM-512,Shared secret,32
+1,ML-KEM-768,Public key,1184
+1,ML-KEM-768,Secret key,2400
+1,ML-KEM-768,Ciphertext,1088
+1,ML-KEM-768,Shared secret,32
+1,ML-KEM-1024,Public key,1568
+1,ML-KEM-1024,Secret key,3168
+1,ML-KEM-1024,Ciphertext,1568
+1,ML-KEM-1024,Shared secret,32
+1,ML-DSA-44,Public key,1312
+1,ML-DSA-44,Secret key,2560
+1,ML-DSA-44,Signature,2420
+1,ML-DSA-65,Public key,1952
+1,ML-DSA-65,Secret key,4032
+1,ML-DSA-65,Signature,3309
+1,ML-DSA-87,Public key,2592
+1,ML-DSA-87,Secret key,4896
+1,ML-DSA-87,Signature,4627
+2,RSA-2048,RSA modulus bytes,256
+2,RSA-2048,Public key DER,294
+2,RSA-2048,Private key DER,1216
+2,RSA-2048,Message,36
+2,RSA-2048,Ciphertext,256
+2,RSA-2048,Signature,256
+2,ECC P-256,Public key DER,91
+2,ECC P-256,Private key DER,138
+2,ECC P-256,Public key raw,65
+2,ECC P-256,Shared secret,32
+2,ECC P-256,Signature,71
+2,ML-KEM-512,Public key,800
+2,ML-KEM-512,Secret key,1632
+2,ML-KEM-512,Ciphertext,768
+2,ML-KEM-512,Shared secret,32
+2,ML-KEM-768,Public key,1184
+2,ML-KEM-768,Secret key,2400
+2,ML-KEM-768,Ciphertext,1088
+2,ML-KEM-768,Shared secret,32
+2,ML-KEM-1024,Public key,1568
+2,ML-KEM-1024,Secret key,3168
+2,ML-KEM-1024,Ciphertext,1568
+2,ML-KEM-1024,Shared secret,32
+2,ML-DSA-44,Public key,1312
+2,ML-DSA-44,Secret key,2560
+2,ML-DSA-44,Signature,2420
+2,ML-DSA-65,Public key,1952
+2,ML-DSA-65,Secret key,4032
+2,ML-DSA-65,Signature,3309
+2,ML-DSA-87,Public key,2592
+2,ML-DSA-87,Secret key,4896
+2,ML-DSA-87,Signature,4627
+3,RSA-2048,RSA modulus bytes,256
+3,RSA-2048,Public key DER,294
+3,RSA-2048,Private key DER,1217
+3,RSA-2048,Message,36
+3,RSA-2048,Ciphertext,256
+3,RSA-2048,Signature,256
+3,ECC P-256,Public key DER,91
+3,ECC P-256,Private key DER,138
+3,ECC P-256,Public key raw,65
+3,ECC P-256,Shared secret,32
+3,ECC P-256,Signature,70
+3,ML-KEM-512,Public key,800
+3,ML-KEM-512,Secret key,1632
+3,ML-KEM-512,Ciphertext,768
+3,ML-KEM-512,Shared secret,32
+3,ML-KEM-768,Public key,1184
+3,ML-KEM-768,Secret key,2400
+3,ML-KEM-768,Ciphertext,1088
+3,ML-KEM-768,Shared secret,32
+3,ML-KEM-1024,Public key,1568
+3,ML-KEM-1024,Secret key,3168
+3,ML-KEM-1024,Ciphertext,1568
+3,ML-KEM-1024,Shared secret,32
+3,ML-DSA-44,Public key,1312
+3,ML-DSA-44,Secret key,2560
+3,ML-DSA-44,Signature,2420
+3,ML-DSA-65,Public key,1952
+3,ML-DSA-65,Secret key,4032
+3,ML-DSA-65,Signature,3309
+3,ML-DSA-87,Public key,2592
+3,ML-DSA-87,Secret key,4896
+3,ML-DSA-87,Signature,4627
+4,RSA-2048,RSA modulus bytes,256
+4,RSA-2048,Public key DER,294
+4,RSA-2048,Private key DER,1216
+4,RSA-2048,Message,36
+4,RSA-2048,Ciphertext,256
+4,RSA-2048,Signature,256
+4,ECC P-256,Public key DER,91
+4,ECC P-256,Private key DER,138
+4,ECC P-256,Public key raw,65
+4,ECC P-256,Shared secret,32
+4,ECC P-256,Signature,71
+4,ML-KEM-512,Public key,800
+4,ML-KEM-512,Secret key,1632
+4,ML-KEM-512,Ciphertext,768
+4,ML-KEM-512,Shared secret,32
+4,ML-KEM-768,Public key,1184
+4,ML-KEM-768,Secret key,2400
+4,ML-KEM-768,Ciphertext,1088
+4,ML-KEM-768,Shared secret,32
+4,ML-KEM-1024,Public key,1568
+4,ML-KEM-1024,Secret key,3168
+4,ML-KEM-1024,Ciphertext,1568
+4,ML-KEM-1024,Shared secret,32
+4,ML-DSA-44,Public key,1312
+4,ML-DSA-44,Secret key,2560
+4,ML-DSA-44,Signature,2420
+4,ML-DSA-65,Public key,1952
+4,ML-DSA-65,Secret key,4032
+4,ML-DSA-65,Signature,3309
+4,ML-DSA-87,Public key,2592
+4,ML-DSA-87,Secret key,4896
+4,ML-DSA-87,Signature,4627
+5,RSA-2048,RSA modulus bytes,256
+5,RSA-2048,Public key DER,294
+5,RSA-2048,Private key DER,1216
+5,RSA-2048,Message,36
+5,RSA-2048,Ciphertext,256
+5,RSA-2048,Signature,256
+5,ECC P-256,Public key DER,91
+5,ECC P-256,Private key DER,138
+5,ECC P-256,Public key raw,65
+5,ECC P-256,Shared secret,32
+5,ECC P-256,Signature,71
+5,ML-KEM-512,Public key,800
+5,ML-KEM-512,Secret key,1632
+5,ML-KEM-512,Ciphertext,768
+5,ML-KEM-512,Shared secret,32
+5,ML-KEM-768,Public key,1184
+5,ML-KEM-768,Secret key,2400
+5,ML-KEM-768,Ciphertext,1088
+5,ML-KEM-768,Shared secret,32
+5,ML-KEM-1024,Public key,1568
+5,ML-KEM-1024,Secret key,3168
+5,ML-KEM-1024,Ciphertext,1568
+5,ML-KEM-1024,Shared secret,32
+5,ML-DSA-44,Public key,1312
+5,ML-DSA-44,Secret key,2560
+5,ML-DSA-44,Signature,2420
+5,ML-DSA-65,Public key,1952
+5,ML-DSA-65,Secret key,4032
+5,ML-DSA-65,Signature,3309
+5,ML-DSA-87,Public key,2592
+5,ML-DSA-87,Secret key,4896
+5,ML-DSA-87,Signature,4627

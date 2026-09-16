@@ -1,0 +1,6 @@
+algorithm,mean_signature_bytes,minimum_signature_bytes,maximum_signature_bytes
+RSA-2048,256.0,256,256
+ECC P-256,70.6,70,71
+ML-DSA-44,2420.0,2420,2420
+ML-DSA-65,3309.0,3309,3309
+ML-DSA-87,4627.0,4627,4627
